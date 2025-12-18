@@ -1,9 +1,10 @@
 import AdminLayout from "../components/AdminLayout";
 import Link from "next/link";
-import { createClient } from "@supabase/supabase-js";
+import { supabaseServer } from "../lib/supabaseServer";
 import { GetServerSidePropsContext } from "next";
 import { useState, useEffect } from "react";
 import type { CSSProperties } from "react";
+import { createSupabaseServer } from "../lib/supabaseServer";
 
 
 // 🇵🇭 Philippines date/time

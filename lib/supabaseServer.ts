@@ -1,4 +1,3 @@
-// lib/supabaseServer.ts
 import { createServerClient } from "@supabase/ssr";
 import { GetServerSidePropsContext } from "next";
 
@@ -17,7 +16,7 @@ export function createSupabaseServer(ctx: GetServerSidePropsContext) {
             `${name}=${value}; Path=/; HttpOnly; SameSite=Lax`
           );
         },
-        remove(name: string, options: any) {
+        remove(name: string) {
           ctx.res.setHeader(
             "Set-Cookie",
             `${name}=; Path=/; Max-Age=0`

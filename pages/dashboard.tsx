@@ -2,6 +2,7 @@ import Link from "next/link";
 import { GetServerSidePropsContext } from "next";
 import { createClient } from "@supabase/supabase-js";
 import { useState } from "react";
+import { createSupabaseServer } from "../lib/supabaseServer";
 
 function formatPH(dateStr: string) {
   return new Intl.DateTimeFormat("en-PH", {
