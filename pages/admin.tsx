@@ -1,6 +1,5 @@
 import AdminLayout from "../components/AdminLayout";
 import Link from "next/link";
-import { supabaseServer } from "../lib/supabaseServer";
 import { GetServerSidePropsContext } from "next";
 import { useState, useEffect } from "react";
 import type { CSSProperties } from "react";
@@ -388,21 +387,19 @@ const td: CSSProperties = {
 
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const supabase = createSupabaseServer(ctx);
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
 
-  const cookie = Object.values(ctx.req.cookies).find(v => v?.includes("access_token"));
-  if (!cookie) return { redirect: { destination: "/login", permanent: false } };
-
-  const session = JSON.parse(decodeURIComponent(cookie));
-  const { data } = await supabase.auth.getUser(session.access_token);
-  if (!data?.user) return { redirect: { destination: "/login", permanent: false } };
+  if (!user) {
+    return { redirect: { destination: "/login", permanent: false } };
+  }
 
   const ADMIN_EMAIL = "zakitheboss21@gmail.com";
-  if (data.user.email !== ADMIN_EMAIL) {
+
+  if (user.email !== ADMIN_EMAIL) {
     return { redirect: { destination: "/dashboard", permanent: false } };
   }
 
@@ -424,3 +421,4 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }
   };
 }
+

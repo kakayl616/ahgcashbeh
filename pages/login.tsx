@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { getSupabaseClient } from "../lib/supabaseClient";
-import { createSupabaseBrowser } from "../lib/supabaseBrowser";
+import { supabaseBrowser } from "../lib/supabaseBrowser";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,29 +9,29 @@ export default function Login() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const signIn = async (e: any) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+const signIn = async (e: any) => {
+  e.preventDefault();
+  setError("");
+  setLoading(true);
 
-    const supabase = getSupabaseClient();
+  const supabase = supabaseBrowser();
 
-const { error } = await supabase.auth.signInWithPassword({
-  email,
-  password,
-});
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
+  setLoading(false);
 
-    setLoading(false);
+  if (error) {
+    setError(error.message);
+    return;
+  }
 
-    if (error) {
-      setError(error.message);
-      return;
-    }
+  // IMPORTANT: full reload so cookies exist for SSR
+  window.location.href = "/dashboard";
+};
 
-    // ✅ Full reload so cookies attach before SSR
-    window.location.href = "/dashboard";
-  };
 
   return (
     <div className="container">

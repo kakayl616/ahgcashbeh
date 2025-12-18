@@ -11,18 +11,12 @@ export function createSupabaseServer(ctx: GetServerSidePropsContext) {
           return ctx.req.cookies[name];
         },
         set(name: string, value: string, options: any) {
-          ctx.res.setHeader(
-            "Set-Cookie",
-            `${name}=${value}; Path=/; HttpOnly; SameSite=Lax`
-          );
+          ctx.res.setHeader("Set-Cookie", `${name}=${value}; Path=/; HttpOnly; SameSite=Lax`);
         },
         remove(name: string) {
-          ctx.res.setHeader(
-            "Set-Cookie",
-            `${name}=; Path=/; Max-Age=0`
-          );
-        },
-      },
+          ctx.res.setHeader("Set-Cookie", `${name}=; Path=/; Max-Age=0`);
+        }
+      }
     }
   );
 }

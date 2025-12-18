@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { GetServerSidePropsContext } from "next";
-import { createClient } from "@supabase/supabase-js";
 import { useState } from "react";
 import { createSupabaseServer } from "../lib/supabaseServer";
 
@@ -196,20 +195,15 @@ export default function Dashboard({ user, sites, tidio_id, logs = [] }: any) {
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const supabase = createSupabaseServer(ctx);
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
 
-  const cookie = Object.values(ctx.req.cookies).find(val => val?.includes("access_token"));
-  if (!cookie) return { redirect: { destination: "/login", permanent: false } };
-
-  const session = JSON.parse(decodeURIComponent(cookie));
-  const { data } = await supabase.auth.getUser(session.access_token);
-  if (!data?.user) return { redirect: { destination: "/login", permanent: false } };
-
-  const user = data.user;
+  if (!user) {
+    return { redirect: { destination: "/login", permanent: false } };
+  }
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -217,7 +211,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     .eq("id", user.id)
     .single();
 
-  // ⭐ IMPORTANT: INCLUDE recovery_enabled
   const { data: sites } = await supabase
     .from("generated_sites")
     .select("*, recovery_enabled")
@@ -240,3 +233,4 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }
   };
 }
+
