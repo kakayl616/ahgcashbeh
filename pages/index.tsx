@@ -207,30 +207,16 @@ export default function HomePage() {
  * If the user is not logged in, they get redirected to /login.
  */
 
-  // Find Supabase session cookie
-import { createClient } from "@supabase/supabase-js";
+import { GetServerSidePropsContext } from "next";
+import { createSupabaseServer } from "../lib/supabaseServer";
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    {
-      auth: {
-        persistSession: false,
-      },
-      global: {
-        headers: {
-          Authorization: ctx.req.headers.authorization ?? "",
-        },
-      },
-    }
-  );
+  const supabase = createSupabaseServer(ctx);
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // ❗ NOT logged in → redirect to /login
   if (!user) {
     return {
       redirect: {
@@ -240,7 +226,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
   }
 
-  // ✅ Logged in
   return {
     props: {},
   };
