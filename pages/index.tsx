@@ -207,9 +207,6 @@ export default function HomePage() {
  * If the user is not logged in, they get redirected to /login.
  */
 
-import { GetServerSidePropsContext } from "next";
-import { createSupabaseServer } from "../lib/supabaseServer";
-
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const supabase = createSupabaseServer(ctx);
 
