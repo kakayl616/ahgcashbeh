@@ -208,7 +208,6 @@ export default function HomePage() {
  */
 
   // Find Supabase session cookie
-import { GetServerSidePropsContext } from "next";
 import { createClient } from "@supabase/supabase-js";
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
