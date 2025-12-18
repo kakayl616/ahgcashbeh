@@ -329,7 +329,15 @@ useEffect(() => {
 
 
   // small helper for opening tidio
-  const openChat = () => window.tidioChatApi?.open();
+  const openChat = () => {
+  const api = window.tidioChatApi;
+  if (typeof api === "function") {
+    api("open");
+  } else {
+    api?.open();
+  }
+};
+
 
   return (
     <div className="profile-isolated">
