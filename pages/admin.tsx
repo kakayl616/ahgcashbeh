@@ -3,6 +3,8 @@ import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import { GetServerSidePropsContext } from "next";
 import { useState, useEffect } from "react";
+import type { CSSProperties } from "react";
+
 
 // 🇵🇭 Philippines date/time
 function formatPH(dateStr: string) {
@@ -373,8 +375,16 @@ export default function AdminSites({ sites = [], logs = [] }: any) {
 /* -----------------------------------------------------------
    SERVER SIDE PROPS
 ------------------------------------------------------------ */
-const th = { padding: "8px", textAlign: "left", borderBottom: "1px solid #1f2933" };
-const td = { padding: "8px" };
+const th: CSSProperties = {
+  padding: "8px",
+  textAlign: "left",
+  borderBottom: "1px solid #1f2933",
+};
+
+const td: CSSProperties = {
+  padding: "8px",
+};
+
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
