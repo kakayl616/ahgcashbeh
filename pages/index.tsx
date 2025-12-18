@@ -2,6 +2,7 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import Head from "next/head";
 import { GetServerSidePropsContext } from "next";
 import { createClient } from "@supabase/supabase-js";
+import { createSupabaseServer } from "../lib/supabaseServer";
 
 type SteamProfileData = {
   displayName: string;
@@ -205,19 +206,33 @@ export default function HomePage() {
  * ✅ This part runs on the SERVER before rendering the page.
  * If the user is not logged in, they get redirected to /login.
  */
+
+  // Find Supabase session cookie
+import { GetServerSidePropsContext } from "next";
+import { createClient } from "@supabase/supabase-js";
+
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    {
+      auth: {
+        persistSession: false,
+      },
+      global: {
+        headers: {
+          Authorization: ctx.req.headers.authorization ?? "",
+        },
+      },
+    }
   );
 
-  // Find Supabase session cookie
-  const cookie = Object.values(ctx.req.cookies).find((v) =>
-    v?.includes("access_token")
-  );
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  // Not logged in → go to /login
-  if (!cookie) {
+  // ❗ NOT logged in → redirect to /login
+  if (!user) {
     return {
       redirect: {
         destination: "/login",
@@ -226,19 +241,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
   }
 
-  const session = JSON.parse(decodeURIComponent(cookie));
-  const { data } = await supabase.auth.getUser(session.access_token);
-
-  // Invalid user → go to /login
-  if (!data?.user) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-
-  // Logged in → allow page to render
-  return { props: {} };
+  // ✅ Logged in
+  return {
+    props: {},
+  };
 }
