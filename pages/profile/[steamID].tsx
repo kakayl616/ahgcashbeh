@@ -6,6 +6,18 @@ import { GetServerSidePropsContext } from "next";
 import { createClient } from "@supabase/supabase-js";
 import { createClient as createClientClient } from "@supabase/supabase-js"; // careful with name
 
+declare global {
+  interface Window {
+    tidioChatApi?: {
+      open: () => void;
+      close?: () => void;
+      hide?: () => void;
+      show?: () => void;
+    } | ((...args: any[]) => void);
+  }
+}
+
+
 type SteamProfileData = {
   displayName: string;
   avatar: string;
