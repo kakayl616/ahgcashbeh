@@ -64,15 +64,14 @@ export default function HomePage() {
       return;
     }
 
-    const baseUrl = window.location.origin;
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
 
 const url = `${baseUrl}/profile/${steamID}?accountStatus=${encodeURIComponent(
   accountStatus
 )}&activeReports=${encodeURIComponent(activeReports)}`;
 
+window.open(url, "_blank");
 
-    window.open(url, "_blank");
-  };
 
   return (
     <>
