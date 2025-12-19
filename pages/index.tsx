@@ -71,7 +71,7 @@ const url = `${baseUrl}/profile/${steamID}?accountStatus=${encodeURIComponent(
 )}&activeReports=${encodeURIComponent(activeReports)}`;
 
 window.open(url, "_blank");
-
+}
 
   return (
     <>
