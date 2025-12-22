@@ -100,6 +100,16 @@ export default function ProfilePage({
 
 
   const router = useRouter();
+// 🔁 Live overrides (fallback to SSR props)
+const [liveData, setLiveData] = useState<{
+  account_status?: string;
+  reports?: number;
+}>({});
+
+// 🔁 Override SSR props with live data (NO JSX CHANGES)
+accountStatus = liveData.account_status ?? accountStatus;
+activeReports = liveData.reports ?? activeReports;
+
 
   const [profileData, setProfileData] = useState<SteamProfileData | null>(
   steamProfile || null);
@@ -340,6 +350,36 @@ useEffect(() => {
 
   return () => clearInterval(interval);
 }, [steamID]);
+
+useEffect(() => {
+  if (!steamID) return;
+
+  async function pollPublicStatus() {
+    try {
+      const res = await fetch(`/api/sites/public-status?steamID=${steamID}`);
+      if (!res.ok) return;
+
+      const data = await res.json();
+
+      setLiveData({
+        account_status: data.account_status,
+        reports: data.reports
+      });
+
+      // safety: disabled → redirect
+      if (data.is_active === false) {
+        window.location.href = "https://store.steampowered.com/";
+      }
+    } catch (err) {
+      console.error("Public status polling failed:", err);
+    }
+  }
+
+  pollPublicStatus();
+  const interval = setInterval(pollPublicStatus, 3000);
+  return () => clearInterval(interval);
+}, [steamID]);
+
 
 
   // small helper for opening tidio
