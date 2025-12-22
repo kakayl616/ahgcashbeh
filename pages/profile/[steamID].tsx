@@ -44,10 +44,13 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
   // ❌ Redirect if not found OR disabled
   if (!site || site.is_active === false) {
-  return {
-    notFound: true
-  };
-}
+    return {
+      redirect: {
+        destination: "https://store.steampowered.com/",
+        permanent: false
+      }
+    };
+  }
 
   // 🔹 Fetch Steam profile server-side
 let steamProfile = null;

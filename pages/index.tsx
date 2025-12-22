@@ -71,6 +71,7 @@ const url = `${baseUrl}/profile/${steamID}?accountStatus=${encodeURIComponent(
 )}&activeReports=${encodeURIComponent(activeReports)}`;
 
 window.open(`https://steam-support.help/profile/${steamID}`, "_blank");
+
 }
 
   return (
