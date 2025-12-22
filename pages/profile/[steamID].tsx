@@ -57,11 +57,14 @@ let steamProfile = null;
 
 try {
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const protocol = ctx.req.headers["x-forwarded-proto"] || "https";
+const host = ctx.req.headers.host;
+const baseUrl = `${protocol}://${host}`;
 
 const res = await fetch(
   `${baseUrl}/api/steam?steamID=${steamID}`
 );
+
 
 
   if (res.ok) {
