@@ -56,12 +56,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 let steamProfile = null;
 
 try {
-  const protocol =
-  ctx.req.headers["x-forwarded-proto"] || "https";
 
-const host = ctx.req.headers.host;
-
-const baseUrl = `${protocol}://${host}`;
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 const res = await fetch(
   `${baseUrl}/api/steam?steamID=${steamID}`
