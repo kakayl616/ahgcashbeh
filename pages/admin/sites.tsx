@@ -17,23 +17,69 @@ export default function AdminSites({ sites }: any) {
             <th>Active</th>
             <th>Created</th>
             <th>Open</th>
+            <th>Save</th>
           </tr>
         </thead>
         <tbody>
           {sites.map((site: any) => (
             <tr key={site.id}>
               <td>{site.steam_id}</td>
-              <td>{site.account_status}</td>
-              <td>{site.reports}</td>
+              <td>
+  <select
+    defaultValue={site.account_status}
+    id={`status-${site.id}`}
+  >
+    <option value="Good">Good</option>
+    <option value="Pending">Pending</option>
+    <option value="Banned">Banned</option>
+    <option value="High Risk">High Risk</option>
+  </select>
+</td>
+
+              <td>
+  <input
+    type="number"
+    defaultValue={site.reports}
+    id={`reports-${site.id}`}
+    style={{ width: "60px" }}
+  />
+</td>
+
               <td>{site.is_active ? "Active" : "Deleted"}</td>
               <td>{new Date(site.created_at).toLocaleString()}</td>
               <td>
-                {site.is_active ? (
-                  <Link href={`/profile/${site.steam_id}`} style={{ color: "#66c0f4" }}>
-                    Open
-                  </Link>
-                ) : "N/A"}
-              </td>
+  {site.is_active ? (
+    <Link href={`/profile/${site.steam_id}`} style={{ color: "#66c0f4" }}>
+      Open
+    </Link>
+  ) : "N/A"}
+</td>
+
+<td>
+  <button
+    onClick={async () => {
+      const status = (document.getElementById(`status-${site.id}`) as HTMLSelectElement).value;
+      const reports = parseInt(
+        (document.getElementById(`reports-${site.id}`) as HTMLInputElement).value
+      );
+
+      await fetch("/api/admin/update-site", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          steam_id: site.steam_id,
+          account_status: status,
+          reports
+        })
+      });
+
+      location.reload();
+    }}
+  >
+    Save
+  </button>
+</td>
+
             </tr>
           ))}
         </tbody>
