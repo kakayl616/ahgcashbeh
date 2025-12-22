@@ -57,8 +57,8 @@ let steamProfile = null;
 
 try {
   const baseUrl =
-  process.env.SITE_ORIGIN ||
-  `http://${ctx.req.headers.host}`;
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  process.env.RAILWAY_PUBLIC_DOMAIN;
 
   const res = await fetch(
     `${baseUrl}/api/steam?steamID=${steamID}`
