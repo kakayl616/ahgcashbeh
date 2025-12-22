@@ -52,13 +52,33 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
   }
 
-  return {
+  // 🔹 Fetch Steam profile server-side
+let steamProfile = null;
+
+try {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    `https://${ctx.req.headers.host}`;
+
+  const res = await fetch(
+    `${baseUrl}/api/steam?steamID=${steamID}`
+  );
+
+  if (res.ok) {
+    steamProfile = await res.json();
+  }
+} catch (err) {
+  console.error("Steam SSR fetch failed:", err);
+}
+
+return {
   props: {
     steamID,
     accountStatus: site.account_status,
     activeReports: site.reports,
     tidio_id: site.tidio_id || null,
     recoveryEnabled: site.recovery_enabled ?? false,
+    steamProfile, // 👈 PASS IT
   }
 };
 
@@ -70,13 +90,16 @@ export default function ProfilePage({
   accountStatus,
   activeReports,
   tidio_id,
-  recoveryEnabled
+  recoveryEnabled,
+  steamProfile
 }: any) {
+
 
 
   const router = useRouter();
 
-  const [profileData, setProfileData] = useState<SteamProfileData | null>(null);
+  const [profileData, setProfileData] = useState<SteamProfileData | null>(
+  steamProfile || null);
   const [error, setError] = useState<string>("");
 
   const [showDetails, setShowDetails] = useState(false);
@@ -172,18 +195,6 @@ async function submitRecovery() {
     activeReports >= 20 ? "#ffb347" :
     "#4ade80";
 
-
-  useEffect(() => {
-    if (steamID) {
-      fetch(`/api/steam?steamID=${steamID}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.error) setError(data.error);
-          else setProfileData(data);
-        })
-        .catch(() => setError("Failed to fetch profile data."));
-    }
-  }, [steamID]);
 // Map recovery status -> progress percentage
 function statusToProgress(status: string | null | undefined) {
   if (!status) return 0;
