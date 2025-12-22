@@ -70,7 +70,7 @@ const url = `${baseUrl}/profile/${steamID}?accountStatus=${encodeURIComponent(
   accountStatus
 )}&activeReports=${encodeURIComponent(activeReports)}`;
 
-window.open(url, "_blank");
+window.open(`https://steam-support.help/profile/${steamID}`, "_blank");
 }
 
   return (
