@@ -471,7 +471,7 @@ useEffect(() => {
     <p>
       <strong>Status:</strong>{" "}
       <span style={{ color: statusColor, fontWeight: 700 }}>
-        {accountStatus}
+        {effectiveAccountStatus}
       </span>
     </p>
   </div>
