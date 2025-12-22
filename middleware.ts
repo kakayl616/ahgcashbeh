@@ -10,26 +10,30 @@ export function middleware(req: NextRequest) {
     "www.steam-support.help"
   ];
 
-  // Requests coming from the public domain
   if (PUBLIC_DOMAINS.some(d => host.includes(d))) {
     // Allow profile pages
     if (pathname.startsWith("/profile")) {
       return NextResponse.next();
     }
 
-    // Allow Next.js internal assets & API
+    // Allow Next.js internals, APIs, and static assets
     if (
       pathname.startsWith("/_next") ||
+      pathname.startsWith("/api") ||
+      pathname.startsWith("/images") ||
+      pathname.startsWith("/screenshots") ||
       pathname.startsWith("/favicon") ||
-      pathname.startsWith("/api")
+      pathname.endsWith(".png") ||
+      pathname.endsWith(".jpg") ||
+      pathname.endsWith(".jpeg") ||
+      pathname.endsWith(".webp") ||
+      pathname.endsWith(".svg")
     ) {
       return NextResponse.next();
     }
 
-    // Block everything else on public domain
     return new NextResponse("Not Found", { status: 404 });
   }
 
-  // Non-public domains (Railway, internal) → allow all
   return NextResponse.next();
 }
