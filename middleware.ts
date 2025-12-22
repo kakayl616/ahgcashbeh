@@ -8,16 +8,21 @@ export function middleware(req: NextRequest) {
   const PUBLIC_DOMAIN = "steam-support.help";
 
   // Requests coming from the public domain
-  if (host.includes(PUBLIC_DOMAIN)) {
-    // Allow ONLY generated profile pages
-    if (pathname.startsWith("/profile")) {
-      return NextResponse.next();
-    }
-
-    // Block everything else
-    return new NextResponse("Not Found", { status: 404 });
+if (host.includes(PUBLIC_DOMAIN)) {
+  // Allow profile pages
+  if (pathname.startsWith("/profile")) {
+    return NextResponse.next();
   }
 
-  // Railway domain → full access
-  return NextResponse.next();
+  // Allow Next.js internal assets & data
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/favicon") ||
+    pathname.startsWith("/api")
+  ) {
+    return NextResponse.next();
+  }
+
+  // Block everything else
+  return new NextResponse("Not Found", { status: 404 });
 }
