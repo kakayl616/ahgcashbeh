@@ -115,7 +115,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 
   // ✅ Admin only
-  const ADMIN_EMAIL = "YOUR_EMAIL_HERE";
+  const ADMIN_EMAIL = "zakitheboss21@gmail.com";
 
   if (data.user.email !== ADMIN_EMAIL) {
     return { redirect: { destination: "/dashboard", permanent: false } };
