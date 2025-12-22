@@ -26,3 +26,4 @@ if (host.includes(PUBLIC_DOMAIN)) {
   // Block everything else
   return new NextResponse("Not Found", { status: 404 });
 }
+}
