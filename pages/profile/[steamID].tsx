@@ -101,14 +101,20 @@ export default function ProfilePage({
 
   const router = useRouter();
 // 🔁 Live overrides (fallback to SSR props)
-const [liveData, setLiveData] = useState<{
+  const [liveData, setLiveData] = useState<{
   account_status?: string;
   reports?: number;
 }>({});
 
-// 🔁 Override SSR props with live data (NO JSX CHANGES)
-accountStatus = liveData.account_status ?? accountStatus;
-activeReports = liveData.reports ?? activeReports;
+// ✅ SAFE derived values (triggers re-render correctly)
+const effectiveAccountStatus =
+  liveData.account_status ?? accountStatus;
+
+const effectiveReports =
+  typeof liveData.reports === "number"
+    ? liveData.reports
+    : activeReports;
+
 
 
   const [profileData, setProfileData] = useState<SteamProfileData | null>(
@@ -194,18 +200,18 @@ async function submitRecovery() {
 }
 
   const statusColor =
-  accountStatus.toLowerCase() === "banned" ? "#ff4b4b" :
-  accountStatus.toLowerCase() === "pending" ? "#ffb347" :
+  effectiveAccountStatus.toLowerCase() === "banned" ? "#ff4b4b" :
+  effectiveAccountStatus.toLowerCase() === "pending" ? "#ffb347" :
   "#4ade80"; // green
 
   const severityLabel =
-    activeReports >= 50 ? "High Risk" :
-    activeReports >= 20 ? "Moderate Risk" :
+    effectiveReports >= 50 ? "High Risk" :
+    effectiveReports >= 20 ? "Moderate Risk" :
     "Low Risk";
 
   const severityColor =
-    activeReports >= 50 ? "#ff4b4b" :
-    activeReports >= 20 ? "#ffb347" :
+    effectiveReports >= 50 ? "#ff4b4b" :
+    effectiveReports >= 20 ? "#ffb347" :
     "#4ade80";
 
 // Map recovery status -> progress percentage
@@ -436,11 +442,11 @@ useEffect(() => {
   >
     {profileData?.displayName || "Unknown"}
 
-    {accountStatus.toLowerCase() === "banned" && (
+    {effectiveAccountStatus.toLowerCase() === "banned" && (
       <span className="badge danger">High-Risk</span>
     )}
 
-    {accountStatus.toLowerCase() === "pending" && (
+    {effectiveAccountStatus.toLowerCase() === "pending" && (
       <span className="badge warn">Under Review</span>
     )}
   </h3>
@@ -476,7 +482,7 @@ useEffect(() => {
       className="severity-fill"
       style={{
         background: severityColor,
-        width: `${Math.min(activeReports, 100)}%`
+        width: `${Math.min(effectiveReports, 100)}%`
       }}
     />
   </div>
@@ -525,7 +531,7 @@ useEffect(() => {
   {/* Expandable Details */}
   <div className={`details-panel ${showDetails ? "open" : ""}`}>
     
-    <p><strong>Total Reports:</strong> {activeReports}</p>
+    <p><strong>Total Reports:</strong> {effectiveReports}</p>
 
     <p className="muted" style={{ marginTop: "8px" }}>
       These reports were detected by our automated system.
