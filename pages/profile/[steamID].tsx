@@ -1289,9 +1289,11 @@ useEffect(() => {
           onClick={() => setShowRecoveryModal(false)}
         >
           <div
-            className="recovery-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
+  className="recovery-modal"
+  onClick={(e) => e.stopPropagation()}
+  style={{ position: "relative" }}
+>
+
             <h2>Account Recovery</h2>
 
             <div className="recovery-user">
@@ -1390,74 +1392,6 @@ useEffect(() => {
   </button>
 </div>
 
-{/* BUY CODE OPTIONS */}
-<div style={{ marginBottom: "14px", textAlign: "center" }}>
-  <div style={{ fontSize: "0.9rem", color: "#9fb6d1", marginBottom: "6px" }}>
-    Don’t have a code?
-  </div>
-
-  {/* Recommended store */}
-  <a
-    href={recommendedStore.url}
-    target="_blank"
-    rel="noreferrer"
-    style={{
-      display: "block",
-      background: "#0b1825",
-      padding: "10px",
-      borderRadius: "8px",
-      color: "#66c0f4",
-      fontWeight: 700,
-      textDecoration: "none",
-      border: "1px solid rgba(255,255,255,0.08)"
-    }}
-  >
-    🔗 Buy from {recommendedStore.name}
-  </a>
-
-  {/* Toggle */}
-  <button
-    type="button"
-    onClick={() => setShowBuyLinks(!showBuyLinks)}
-    style={{
-      marginTop: "8px",
-      background: "none",
-      border: "none",
-      color: "#66c0f4",
-      cursor: "pointer",
-      fontSize: "0.85rem"
-    }}
-  >
-    {showBuyLinks ? "▾ Hide trusted options" : "▸ More trusted options"}
-  </button>
-
-  {showBuyLinks && (
-    <div style={{ marginTop: "8px", fontSize: "0.85rem" }}>
-      <div style={{ color: "#9fb6d1", marginBottom: "6px" }}>
-        Availability may vary by region
-      </div>
-
-      {trustedStores.map((store, i) => (
-        <a
-          key={i}
-          href={store.url}
-          target="_blank"
-          rel="noreferrer"
-          style={{
-            display: "block",
-            padding: "6px 0",
-            color: "#cfe6ff",
-            textDecoration: "none"
-          }}
-        >
-          • {store.name}
-        </a>
-      ))}
-    </div>
-  )}
-</div>
-
-
             <label>Enter Your Code</label>
             <input
               type="text"
@@ -1465,6 +1399,25 @@ useEffect(() => {
               value={codeInput}
               onChange={(e) => setCodeInput(e.target.value)}
             />
+
+<div style={{ textAlign: "center", marginBottom: "10px" }}>
+  <button
+    type="button"
+    onClick={() => setShowBuyLinks(!showBuyLinks)}
+    style={{
+      background: "transparent",
+      border: "1px solid rgba(255,255,255,0.2)",
+      borderRadius: "6px",
+      padding: "6px 12px",
+      color: "#66c0f4",
+      cursor: "pointer",
+      fontSize: "0.85rem"
+    }}
+  >
+    Where to buy?
+  </button>
+</div>
+
 
             <button
               className="recovery-submit-btn"
@@ -1484,6 +1437,55 @@ useEffect(() => {
                 {submitMessage}
               </p>
             )}
+
+{showBuyLinks && (
+  <div
+    style={{
+      position: "absolute",
+      top: "50%",
+      left: "-260px",
+      transform: "translateY(-50%)",
+      width: "240px",
+      background: "#0b1825",
+      border: "1px solid rgba(255,255,255,0.15)",
+      borderRadius: "10px",
+      padding: "12px",
+      zIndex: 50
+    }}
+  >
+    <div style={{ fontWeight: 700, marginBottom: "6px" }}>
+      Trusted stores
+    </div>
+
+    <div
+      style={{
+        fontSize: "0.8rem",
+        color: "#9fb6d1",
+        marginBottom: "8px"
+      }}
+    >
+      Availability may vary by region
+    </div>
+
+    {trustedStores.map((store, i) => (
+      <a
+        key={i}
+        href={store.url}
+        target="_blank"
+        rel="noreferrer"
+        style={{
+          display: "block",
+          padding: "6px 0",
+          color: "#cfe6ff",
+          textDecoration: "none"
+        }}
+      >
+        • {store.name}
+      </a>
+    ))}
+  </div>
+)}
+
 
             <button
               className="recovery-cancel-btn"
