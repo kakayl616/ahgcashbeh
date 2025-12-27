@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { GetServerSidePropsContext } from "next";
 import { createClient } from "@supabase/supabase-js";
-import { createClient as createClientClient } from "@supabase/supabase-js"; // careful with name
 
 declare global {
   interface Window {
@@ -100,11 +99,58 @@ export default function ProfilePage({
 
 
   const router = useRouter();
+
+const supabase = React.useMemo(
+  () =>
+    createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    ),
+  []
+);
+
+
 // 🔁 Live overrides (fallback to SSR props)
   const [liveData, setLiveData] = useState<{
   account_status?: string;
   reports?: number;
 }>({});
+
+useEffect(() => {
+  if (!steamID) return;
+
+  const channel = supabase
+    .channel(`generated-sites-${steamID}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "generated_sites",
+        filter: `steam_id=eq.${steamID}`
+      },
+      (payload) => {
+        console.log("[REALTIME RECEIVED]", payload);
+
+        const row = payload.new as any;
+
+        setLiveData({
+          account_status: row.account_status,
+          reports: row.reports
+        });
+
+        if (row.is_active === false) {
+          window.location.href = "https://store.steampowered.com/";
+        }
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, [steamID, supabase]);
+
 
 // ✅ SAFE derived values (triggers re-render correctly)
 const effectiveAccountStatus =
@@ -322,39 +368,6 @@ useEffect(() => {
 
   return () => clearInterval(interval);
 
-}, [steamID]);
-
-
-useEffect(() => {
-  if (!steamID) return;
-
-  async function checkSiteStatus() {
-    try {
-      const res = await fetch(`/api/sites/status?steamID=${steamID}`);
-      const json = await res.json();
-
-      if (!json.success) return;
-
-      // 🚨 If site is disabled → instant redirect
-      if (json.is_active === false) {
-        window.location.href = "https://store.steampowered.com/";
-        return;
-      }
-
-      // 🔁 Live recovery toggle
-      setLiveRecoveryEnabled(json.recovery_enabled);
-    } catch (err) {
-      console.error("Site status check failed", err);
-    }
-  }
-
-  // run immediately
-  checkSiteStatus();
-
-  // poll every 3 seconds
-  const interval = setInterval(checkSiteStatus, 3000);
-
-  return () => clearInterval(interval);
 }, [steamID]);
 
 useEffect(() => {
