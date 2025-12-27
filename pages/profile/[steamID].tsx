@@ -1488,9 +1488,6 @@ willChange: "opacity, transform"
   ))}
 </div>
 
-)}
-
-
             <button
               className="recovery-cancel-btn"
               onClick={() => setShowRecoveryModal(false)}
