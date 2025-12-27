@@ -1466,38 +1466,30 @@ useEffect(() => {
     padding: "12px",
     zIndex: 50
   }}
-  >
-    <div style={{ fontWeight: 700, marginBottom: "6px" }}>
-      Trusted stores
-    </div>
+>
+  <div style={{ fontWeight: 700, marginBottom: "6px" }}>
+    Trusted stores
+  </div>
 
-    <div
+  {trustedStores.map(store => (
+    <a
+      key={store.name}
+      href={store.url}
+      target="_blank"
+      rel="noreferrer"
       style={{
-        fontSize: "0.8rem",
-        color: "#9fb6d1",
-        marginBottom: "8px"
+        display: "block",
+        padding: "6px 8px",
+        borderRadius: "6px",
+        color: "#7dd3fc",
+        textDecoration: "none"
       }}
     >
-      Availability may vary by region
-    </div>
+      {store.name}
+    </a>
+  ))}
+</div>
 
-    {trustedStores.map((store, i) => (
-      <a
-        key={i}
-        href={store.url}
-        target="_blank"
-        rel="noreferrer"
-        style={{
-          display: "block",
-          padding: "6px 0",
-          color: "#cfe6ff",
-          textDecoration: "none"
-        }}
-      >
-        • {store.name}
-      </a>
-    ))}
-  </div>
 )}
 
 
