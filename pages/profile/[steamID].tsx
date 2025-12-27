@@ -1519,7 +1519,6 @@ useEffect(() => {
               Cancel
             </button>
           </div>
-        </div>
       )}
 
  {/* Tidio Chat Widget */}
