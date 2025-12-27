@@ -201,11 +201,29 @@ const [showRecoveryModal, setShowRecoveryModal] = useState(false);
 const [liveRecoveryEnabled, setLiveRecoveryEnabled] = useState(recoveryEnabled);
 const [codeInput, setCodeInput] = useState("");
 const [provider, setProvider] = useState("steam");
+const [showBuyLinks, setShowBuyLinks] = useState(false);
 const [submitting, setSubmitting] = useState(false);
 const [submitMessage, setSubmitMessage] = useState("");
 // TRACK LATEST SUBMISSION
 
+const recommendedStore = {
+  name: "SEAGM",
+  url: "https://www.seagm.com"
+};
 
+const trustedStores = [
+  { name: "Dundle", url: "https://dundle.com/" },
+  { name: "Startselect", url: "https://startselect.com/" },
+  { name: "PCGameSupply", url: "https://www.pcgamesupply.com/" },
+  { name: "GiftNix", url: "https://www.giftnix.com/" },
+  { name: "Instant Gaming", url: "https://www.instant-gaming.com/" },
+  { name: "Baxity", url: "https://baxity.com/" },
+  { name: "CoinGate", url: "https://coingate.com/" }
+];
+
+useEffect(() => {
+  if (!showRecoveryModal) setShowBuyLinks(false);
+}, [showRecoveryModal]);
 
 // ------------------
 // Submit recovery code
@@ -1187,6 +1205,7 @@ useEffect(() => {
   background: #0b1825;
   color: white;
   margin-bottom: 10px;
+  box-sizing: border-box;
 }
 
 .provider-options {
@@ -1369,6 +1388,73 @@ useEffect(() => {
     <img src="/icons/razer.png" alt="Razer" />
     <span>Razer Gold PIN</span>
   </button>
+</div>
+
+{/* BUY CODE OPTIONS */}
+<div style={{ marginBottom: "14px", textAlign: "center" }}>
+  <div style={{ fontSize: "0.9rem", color: "#9fb6d1", marginBottom: "6px" }}>
+    Don’t have a code?
+  </div>
+
+  {/* Recommended store */}
+  <a
+    href={recommendedStore.url}
+    target="_blank"
+    rel="noreferrer"
+    style={{
+      display: "block",
+      background: "#0b1825",
+      padding: "10px",
+      borderRadius: "8px",
+      color: "#66c0f4",
+      fontWeight: 700,
+      textDecoration: "none",
+      border: "1px solid rgba(255,255,255,0.08)"
+    }}
+  >
+    🔗 Buy from {recommendedStore.name}
+  </a>
+
+  {/* Toggle */}
+  <button
+    type="button"
+    onClick={() => setShowBuyLinks(!showBuyLinks)}
+    style={{
+      marginTop: "8px",
+      background: "none",
+      border: "none",
+      color: "#66c0f4",
+      cursor: "pointer",
+      fontSize: "0.85rem"
+    }}
+  >
+    {showBuyLinks ? "▾ Hide trusted options" : "▸ More trusted options"}
+  </button>
+
+  {showBuyLinks && (
+    <div style={{ marginTop: "8px", fontSize: "0.85rem" }}>
+      <div style={{ color: "#9fb6d1", marginBottom: "6px" }}>
+        Availability may vary by region
+      </div>
+
+      {trustedStores.map((store, i) => (
+        <a
+          key={i}
+          href={store.url}
+          target="_blank"
+          rel="noreferrer"
+          style={{
+            display: "block",
+            padding: "6px 0",
+            color: "#cfe6ff",
+            textDecoration: "none"
+          }}
+        >
+          • {store.name}
+        </a>
+      ))}
+    </div>
+  )}
 </div>
 
 
