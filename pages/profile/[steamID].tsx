@@ -1275,23 +1275,6 @@ useEffect(() => {
   to   { opacity: 1; transform: scale(1); }
 }
 
-        .buy-bubble {
-  position: absolute;
-  top: 50%;
-  left: -260px;
-  transform: translate(-10px, -50%);
-  opacity: 0;
-  transition:
-    opacity 180ms ease-out,
-    transform 180ms ease-out;
-}
-
-.buy-bubble.show {
-  opacity: 1;
-  transform: translate(0, -50%);
-}
-
-
       `}</style>
 
             {/* optional custom chat invite (disabled by default) */}
@@ -1455,17 +1438,32 @@ useEffect(() => {
               </p>
             )}
 
-{showBuyLinks && (
+
   <div
-  className={`buy-bubble ${showBuyLinks ? "show" : ""}`}
   style={{
-    width: "240px",
-    background: "#0b1825",
-    border: "1px solid rgba(255,255,255,0.15)",
-    borderRadius: "10px",
-    padding: "12px",
-    zIndex: 50
-  }}
+  position: "absolute",
+  top: "50%",
+  left: "-260px",
+  width: "240px",
+  background: "#0b1825",
+  border: "1px solid rgba(255,255,255,0.15)",
+  borderRadius: "10px",
+  padding: "12px",
+  zIndex: 50,
+
+  /* ANIMATION */
+  opacity: showBuyLinks ? 1 : 0,
+transform: showBuyLinks
+  ? "translate(0, -50%) scale(1)"
+  : "translate(-24px, -50%) scale(0.94)",
+
+transition:
+  "opacity 260ms cubic-bezier(0.22, 1, 0.36, 1), transform 260ms cubic-bezier(0.22, 1, 0.36, 1)",
+
+pointerEvents: showBuyLinks ? "auto" : "none",
+willChange: "opacity, transform"
+
+}}
 >
   <div style={{ fontWeight: 700, marginBottom: "6px" }}>
     Trusted stores
