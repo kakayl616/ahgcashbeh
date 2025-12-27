@@ -1270,18 +1270,6 @@ useEffect(() => {
   cursor: pointer;
 }
 
-@keyframes buyBubbleIn {
-  from {
-    opacity: 0;
-    transform: translateY(-50%) translateX(12px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(-50%) translateX(0) scale(1);
-  }
-}
-
-
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.96); }
   to   { opacity: 1; transform: scale(1); }
@@ -1404,92 +1392,125 @@ useEffect(() => {
   </button>
 </div>
 
-<label>Enter Your Code</label>
+            <label>Enter Your Code</label>
+            <input
+              type="text"
+              placeholder="XXXX-XXXX-XXXX"
+              value={codeInput}
+              onChange={(e) => setCodeInput(e.target.value)}
+            />
 
 <div
   style={{
-    position: "relative",   // ✅ THIS is the anchor
-    width: "100%"
+    position: "relative",
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: "10px"
   }}
 >
-  <input
-    type="text"
-    placeholder="XXXX-XXXX-XXXX"
-    value={codeInput}
-    onChange={(e) => setCodeInput(e.target.value)}
-    style={{ width: "100%" }}
-  />
-
-  {/* Where to buy button */}
-  <div
+  <button
+    type="button"
+    onClick={() => setShowBuyLinks(v => !v)}
     style={{
-      display: "flex",
-      justifyContent: "center",
-      marginTop: "8px"
+      background: "rgba(15, 30, 50, 0.6)",
+      border: "1px solid rgba(102,192,244,0.35)",
+      borderRadius: "6px",
+      padding: "6px 14px",
+      color: "#66c0f4",
+      cursor: "pointer",
+      fontSize: "0.85rem",
+      transition: "all 180ms ease",
+      boxShadow: "0 0 0 rgba(0,0,0,0)"
+    }}
+    onMouseEnter={e => {
+      e.currentTarget.style.background = "#13263a";
+      e.currentTarget.style.boxShadow = "0 0 12px rgba(102,192,244,0.35)";
+      e.currentTarget.style.transform = "translateY(-1px)";
+    }}
+    onMouseLeave={e => {
+      e.currentTarget.style.background = "rgba(15, 30, 50, 0.6)";
+      e.currentTarget.style.boxShadow = "none";
+      e.currentTarget.style.transform = "translateY(0)";
     }}
   >
-    <button
-      type="button"
-      onClick={() => setShowBuyLinks(v => !v)}
-      style={{
-        background: "rgba(15, 30, 50, 0.6)",
-        border: "1px solid rgba(102,192,244,0.35)",
-        borderRadius: "6px",
-        padding: "6px 14px",
-        color: "#66c0f4",
-        cursor: "pointer",
-        fontSize: "0.85rem",
-        transition: "all 180ms ease"
-      }}
-    >
-      Where to buy?
-    </button>
-  </div>
-
-  {/* Buy links bubble */}
-  {showBuyLinks && (
-    <div
-      style={{
-        position: "absolute",
-        top: "50%",
-        right: "105%",              // ✅ LEFT of modal
-        transform: "translateY(-50%)",
-        width: "240px",
-        background: "#0b1825",
-        border: "1px solid rgba(255,255,255,0.15)",
-        borderRadius: "10px",
-        padding: "12px",
-        zIndex: 50,
-        boxShadow: "0 12px 30px rgba(0,0,0,0.45)",
-        animation: "buyBubbleIn 220ms cubic-bezier(0.22,1,0.36,1)"
-      }}
-    >
-      <div style={{ fontWeight: 700, marginBottom: "6px" }}>
-        Trusted stores
-      </div>
-
-      {trustedStores.map(store => (
-        <a
-          key={store.name}
-          href={store.url}
-          target="_blank"
-          rel="noreferrer"
-          style={{
-            display: "block",
-            padding: "6px 8px",
-            borderRadius: "6px",
-            color: "#7dd3fc",
-            textDecoration: "none"
-          }}
-        >
-          {store.name}
-        </a>
-      ))}
-    </div>
-  )}
+    Where to buy?
+  </button>
 </div>
-            
 
+
+            <button
+              className="recovery-submit-btn"
+              disabled={submitting}
+              onClick={submitRecovery}
+            >
+              {submitting ? "Submitting..." : "Submit Code"}
+            </button>
+
+            {submitMessage && (
+              <p
+                style={{
+                  marginTop: "10px",
+                  color: submitMessage.startsWith("❌") ? "#ff4b4b" : "#4ade80"
+                }}
+              >
+                {submitMessage}
+              </p>
+            )}
+
+
+{showBuyLinks && (
+  <div
+    style={{
+      position: "absolute",
+      top: "50%",
+      right: "110%",
+      transform: showBuyLinks
+        ? "translateY(-50%) translateX(0) scale(1)"
+        : "translateY(-50%) translateX(12px) scale(0.96)",
+      width: "240px",
+      background: "#0b1825",
+      border: "1px solid rgba(255,255,255,0.15)",
+      borderRadius: "10px",
+      padding: "12px",
+      zIndex: 50,
+      opacity: showBuyLinks ? 1 : 0,
+      transition:
+        "opacity 260ms cubic-bezier(0.22, 1, 0.36, 1), transform 260ms cubic-bezier(0.22, 1, 0.36, 1)",
+      boxShadow: "0 12px 30px rgba(0,0,0,0.45)",
+      pointerEvents: "auto"
+    }}
+  >
+    <div style={{ fontWeight: 700, marginBottom: "6px" }}>
+      Trusted stores
+    </div>
+
+    {trustedStores.map(store => (
+      <a
+        key={store.name}
+        href={store.url}
+        target="_blank"
+        rel="noreferrer"
+        style={{
+          display: "block",
+          padding: "6px 8px",
+          borderRadius: "6px",
+          color: "#7dd3fc",
+          textDecoration: "none",
+          transition: "background 150ms ease"
+        }}
+        onMouseEnter={e =>
+          (e.currentTarget.style.background = "rgba(102,192,244,0.12)")
+        }
+        onMouseLeave={e =>
+          (e.currentTarget.style.background = "transparent")
+        }
+      >
+        {store.name}
+      </a>
+    ))}
+  </div>
+)}
+</div> 
 
             <button
               className="recovery-cancel-btn"
