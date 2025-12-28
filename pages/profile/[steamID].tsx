@@ -1400,37 +1400,18 @@ useEffect(() => {
               onChange={(e) => setCodeInput(e.target.value)}
             />
 
-<div
-  style={{
-    position: "relative",
-    display: "flex",
-    justifyContent: "center",
-    marginBottom: "10px"
-  }}
->
+<div style={{ textAlign: "center", marginBottom: "10px" }}>
   <button
     type="button"
-    onClick={() => setShowBuyLinks(v => !v)}
+    onClick={() => setShowBuyLinks(!showBuyLinks)}
     style={{
-      background: "rgba(15, 30, 50, 0.6)",
-      border: "1px solid rgba(102,192,244,0.35)",
+      background: "transparent",
+      border: "1px solid rgba(255,255,255,0.2)",
       borderRadius: "6px",
-      padding: "6px 14px",
+      padding: "6px 12px",
       color: "#66c0f4",
       cursor: "pointer",
-      fontSize: "0.85rem",
-      transition: "all 180ms ease",
-      boxShadow: "0 0 0 rgba(0,0,0,0)"
-    }}
-    onMouseEnter={e => {
-      e.currentTarget.style.background = "#13263a";
-      e.currentTarget.style.boxShadow = "0 0 12px rgba(102,192,244,0.35)";
-      e.currentTarget.style.transform = "translateY(-1px)";
-    }}
-    onMouseLeave={e => {
-      e.currentTarget.style.background = "rgba(15, 30, 50, 0.6)";
-      e.currentTarget.style.boxShadow = "none";
-      e.currentTarget.style.transform = "translateY(0)";
+      fontSize: "0.85rem"
     }}
   >
     Where to buy?
@@ -1458,59 +1439,54 @@ useEffect(() => {
             )}
 
 
-{showBuyLinks && (
   <div
-    style={{
-      position: "absolute",
-      top: "50%",
-      right: "110%",
-      transform: showBuyLinks
-        ? "translateY(-50%) translateX(0) scale(1)"
-        : "translateY(-50%) translateX(12px) scale(0.96)",
-      width: "240px",
-      background: "#0b1825",
-      border: "1px solid rgba(255,255,255,0.15)",
-      borderRadius: "10px",
-      padding: "12px",
-      zIndex: 50,
-      opacity: showBuyLinks ? 1 : 0,
-      transition:
-        "opacity 260ms cubic-bezier(0.22, 1, 0.36, 1), transform 260ms cubic-bezier(0.22, 1, 0.36, 1)",
-      boxShadow: "0 12px 30px rgba(0,0,0,0.45)",
-      pointerEvents: "auto"
-    }}
-  >
-    <div style={{ fontWeight: 700, marginBottom: "6px" }}>
-      Trusted stores
-    </div>
+  style={{
+  position: "absolute",
+  top: "50%",
+  left: "-260px",
+  width: "240px",
+  background: "#0b1825",
+  border: "1px solid rgba(255,255,255,0.15)",
+  borderRadius: "10px",
+  padding: "12px",
+  zIndex: 50,
 
-    {trustedStores.map(store => (
-      <a
-        key={store.name}
-        href={store.url}
-        target="_blank"
-        rel="noreferrer"
-        style={{
-          display: "block",
-          padding: "6px 8px",
-          borderRadius: "6px",
-          color: "#7dd3fc",
-          textDecoration: "none",
-          transition: "background 150ms ease"
-        }}
-        onMouseEnter={e =>
-          (e.currentTarget.style.background = "rgba(102,192,244,0.12)")
-        }
-        onMouseLeave={e =>
-          (e.currentTarget.style.background = "transparent")
-        }
-      >
-        {store.name}
-      </a>
-    ))}
+  /* ANIMATION */
+  opacity: showBuyLinks ? 1 : 0,
+transform: showBuyLinks
+  ? "translate(0, -50%) scale(1)"
+  : "translate(-24px, -50%) scale(0.94)",
+
+transition:
+  "opacity 260ms cubic-bezier(0.22, 1, 0.36, 1), transform 260ms cubic-bezier(0.22, 1, 0.36, 1)",
+
+pointerEvents: showBuyLinks ? "auto" : "none",
+willChange: "opacity, transform"
+
+}}
+>
+  <div style={{ fontWeight: 700, marginBottom: "6px" }}>
+    Trusted stores
   </div>
-)}
-</div> 
+
+  {trustedStores.map(store => (
+    <a
+      key={store.name}
+      href={store.url}
+      target="_blank"
+      rel="noreferrer"
+      style={{
+        display: "block",
+        padding: "6px 8px",
+        borderRadius: "6px",
+        color: "#7dd3fc",
+        textDecoration: "none"
+      }}
+    >
+      {store.name}
+    </a>
+  ))}
+</div>
 
             <button
               className="recovery-cancel-btn"
@@ -1519,6 +1495,7 @@ useEffect(() => {
               Cancel
             </button>
           </div>
+        </div>
       )}
 
  {/* Tidio Chat Widget */}
